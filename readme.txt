@@ -1,89 +1,16 @@
-How to build example code for ARM.
+# PocketBook Color SDK
 
-1. Build processed on debian stretch linux; if you use other OS or linux distributive - install it as virtual machine or chroot.
+## What is this?
 
-1a. Setup build environment on Ubuntu 18.04
+Forked from https://github.com/c3pio-man/pb-qt-3, to compile and write your own App for PocketBook Color.
 
-sudo apt install debootstrap schroot
-sudo  debootstrap stretch debian-stretch
+This is based on SDK_6.3.0 from https://github.com/c3pio-man/SDK_6.3.0/ branch 6.1
 
-Detect yor login
-id -u -n
-and your primary group
-id -g -n
+## Getting started
 
-Place to /etc/schroot/schroot.conf file section
-
-[debian-stretch]
-directory=/absolute/path/to/debian-stretch-directory
-groups=_your_primary_group,root
-description=debian-stretch
-users=_your_login,root
-type=directory
-
-Uncomment in file /etc/schroot/default/fstab :
-/dev/shm       /dev/shm        none    rw,bind         0       0
-
-Install software into chrooted environment:
-sudo schroot -c debian-stretch -d / -p
-apt update
-apt install g++ libfreetype6-dev libtag1-dev libjsoncpp-dev libgtk2.0-dev libcurl4-openssl-dev libjson-c-dev strace xterm patchelf mc git libjpeg-dev libjpeg62 strace libdbus-1-dev libnss3-dev
-
-Create directory for buld
-mkdir /BUILD
-chown _your_login:_your_primary_group  /BUILD/
-
-2. Get cross-compiller and example sources
-
-Enter to chroot as ordinary user
-
-schroot -c debian-stretch -d /BUILD -p
-
-Fetch SDK and example sources
-
-git clone --recurse-submodules -b 6.1 https://github.com/c3pio-man/pb-qt-3
-cd pb-qt-3
-./download.sh
-
-2a. Configure build directory
-
-cd pb-qt-3
-Run configuration scripts
-
-./env_set.sh
-./SDK_6.3.0/SDK-B288/bin/update_path.sh 
- 
-3a. Cross-compile example code for ARM:
-
-cd build/qml_test 
-./makearm.sh
-
-Build result must be found in output-arm directory. Copy test application output-arm/qml_test to applications/qml_test.app on device and run it as PB application
-
-3b. Build example code for PC:
-
-cd build/qml_test
-./makepc.SH
-
-Build result must be found in output-linux directory. 
-
-Run output-linux/qml_test with pc-wrapper.sh:
-
-../../pc-wrapper.sh output-linux/qml_test
-
-
-4. Cross-compite browser-minimal for ARM (like qml_test):
-
-cd build/browser-minimal
-./nightbuild.sh
-
-and for PC:
-cd build/browser-minimal
-./makepc.SH
-
-
-5. To debug, pc-wrapper.sh can use with parameter -s:
-
-../../pc-wrapper.sh -s output-linux/qml_test
-
+```
+# docker build -t pb6 -f docker/Dockerfile .
+# docker run -it --rm -v build:/app/build pb6 build/qml_test
+# docker run -it --rm -v build:/app/build pb6 build/browser-minimal/
+```
 
