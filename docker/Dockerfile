@@ -12,6 +12,6 @@ WORKDIR /app
 RUN wget -O SDK-B288-6.1.7z  https://github.com/c3pio-man/SDK_6.3.0/releases/download/6.1/SDK-B288-6.1.7z
 RUN apt install -y p7zip-full
 RUN 7z x -aoa -y SDK-B288-6.1.7z -oSDK_6.3.0
-COPY docker/Makefile /app/Makefile
+COPY docker/compile.sh /app/compile.sh
 #RUN ./env_set.sh && ./SDK_6.3.0/SDK-B288/bin/update_path.sh && cd build/qml_test && ./makearm.sh
-ENTRYPOINT ["make", "-f", "/app/Makefile"]
+ENTRYPOINT ["./compile.sh"]
